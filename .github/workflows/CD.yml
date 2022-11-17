@@ -14,14 +14,18 @@
 name: C/D
 
 on:        
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'the version number to release'
-        required: true
-      sha:
-        description: 'the github sha to release'
-        required: true
+  #workflow_dispatch:
+  #  inputs:
+   #   version:
+    #    description: 'the version number to release'
+     #   required: true
+      #sha:
+       # description: 'the github sha to release'
+        #required: true
+  push:
+    branches: [main, testTagPush]
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -46,6 +50,10 @@ jobs:
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
       latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
     steps: 
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
