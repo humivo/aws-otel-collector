@@ -51,12 +51,10 @@ jobs:
       latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
     steps: 
       - uses: actions/checkout@v3
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
+      - name: Test env
         run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+          echo ${{ github.ref_name }}
+          echo ${{ github.sha }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
