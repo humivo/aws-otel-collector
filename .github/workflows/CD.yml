@@ -23,7 +23,7 @@ on:
        # description: 'the github sha to release'
         #required: true
   push:
-    branches: [main, testTagPush]
+    #branches: [main, testTagPush]
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+*"
     
