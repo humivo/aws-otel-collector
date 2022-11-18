@@ -52,7 +52,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set env
         run: |
-          if ${{ github.event_name }} == 'workflow_dispatch'; then
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
             echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
             echo "SHA=${{ github.event.inputs.sha }}" >> $GITHUB_ENV
           else
