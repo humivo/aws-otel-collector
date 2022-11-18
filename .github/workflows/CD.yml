@@ -42,7 +42,7 @@ permissions:
   contents: write
 
 jobs:
-  release-checking-manual: 
+  release-checking: 
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.checking_sha_version.outputs.version }}
