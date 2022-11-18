@@ -51,21 +51,14 @@ jobs:
     steps: 
       - uses: actions/checkout@v3
       - name: Set env
-        run: |-
-          echo "VERSION=$(
-          if ${{ github.event.inputs.version }}; then
-            echo ${{ github.event.inputs.version }}
+        run: |
+          if ${{ github.event_name }} == 'workflow_dispatch'; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+            echo "SHA=${{ github.event.inputs.sha }}" >> $GITHUB_ENV
           else
-            echo ${{ github.ref_name }}
+            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "SHA=${{ github.sha }}" >> $GITHUB_ENV
           fi
-          )" >> $GITHUB_ENV
-          echo "SHA=$(
-          if ${{ github.event.inputs.sha }}; then
-            echo ${{ github.event.inputs.sha }}
-          else
-            echo ${{ github.sha }}
-          fi
-          )" >> $GITHUB_ENV
       - name: Test env
         run: |
           echo ${{ env.VERSION }}
