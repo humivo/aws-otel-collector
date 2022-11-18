@@ -14,16 +14,15 @@
 name: C/D
 
 on:        
-  #workflow_dispatch:
-  #  inputs:
-   #   version:
-    #    description: 'the version number to release'
-     #   required: true
-      #sha:
-       # description: 'the github sha to release'
-        #required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'the version number to release'
+        required: true
+      sha:
+        description: 'the github sha to release'
+        required: true
   push:
-    #branches: [main, testTagPush]
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+*"
     
@@ -43,7 +42,7 @@ permissions:
   contents: write
 
 jobs:
-  release-checking: 
+  release-checking-manual: 
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.checking_sha_version.outputs.version }}
@@ -51,10 +50,26 @@ jobs:
       latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
     steps: 
       - uses: actions/checkout@v3
+      - name: Set env
+        run: |
+          echo "VERSION=$(
+          if ${{ github.event.inputs.version }}; then
+            echo ${{ github.event.inputs.version }}
+          else
+            echo ${{ github.ref_name }}
+          fi
+          )" >> $GITHUB_ENV
+          echo "SHA=$(
+          if ${{ github.event.inputs.sha }}; then
+            echo ${{ github.event.inputs.sha }}
+          else
+            echo ${{ github.sha }}
+          fi
+          )" >> $GITHUB_ENV
       - name: Test env
         run: |
-          echo ${{ github.ref_name }}
-          echo ${{ github.sha }}
+          echo ${{ env.VERSION }}
+          echo ${{ env.SHA }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
