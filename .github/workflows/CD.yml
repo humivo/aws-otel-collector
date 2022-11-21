@@ -54,16 +54,16 @@ jobs:
         id: set-input-vars
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }}; then
-            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-            echo "SHA=${{ github.event.inputs.sha }}" >> $GITHUB_OUTPUT
+            echo "VERSION_INPUT=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "SHA_INPUT=${{ github.event.inputs.sha }}" >> $GITHUB_OUTPUT
           else
-            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-            echo "SHA=${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "VERSION_INPUT=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "SHA_INPUT=${{ github.sha }}" >> $GITHUB_OUTPUT
           fi
       - name: Test env
         run: |
-          echo ${{ steps.set-input-vars.outputs.VERSION }}
-          echo ${{ steps.set-input-vars.outputs.SHA }}
+          echo ${{ steps.set-input-vars.outputs.VERSION_INPUT }}
+          echo ${{ steps.set-input-vars.outputs.SHA_INPUT }}
       - name: Configure AWS Credentials
         if: false
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -127,8 +127,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test env
         run: |
-          echo ${{ steps.set-input-vars.outputs.VERSION }}
-          echo ${{ steps.set-input-vars.outputs.SHA }}
+          echo ${{ needs.release-checking.outputs.VERSION_INPUT }}
+          echo ${{ needs.release-checking.outputs.SHA_INPUT }}
       - name: Cache if success
         id: release-to-s3
         uses: actions/cache@v3
