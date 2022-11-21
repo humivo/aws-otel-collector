@@ -24,7 +24,7 @@ on:
         required: true
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -64,24 +64,29 @@ jobs:
           echo ${{ env.VERSION }}
           echo ${{ env.SHA }}
       - name: Configure AWS Credentials
+        if: false
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Login Dockerhub
+        if: false
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
       - name: Download candidate
+        if: false
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" candidate.tar.gz
 
       - name: Uncompress the candidate package
+        if: false
         run: tar zxvf candidate.tar.gz
 
       - name: Check commit SHA and version
+        if: false
         id: checking_sha_version
         run: |
           version_in_release=`cat $PACKAGING_ROOT/VERSION`
@@ -101,12 +106,14 @@ jobs:
           echo "::set-output name=testing_version::$version_in_release_candidate"
           
       - name: Compare version with Dockerhub latest
+        if: false
         id: version
         run: |
           TAG="${{ steps.checking_sha_version.outputs.version }}" 
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Cache packages
+        if: false
         uses: actions/cache@v3
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
@@ -117,7 +124,10 @@ jobs:
     needs: [release-checking]
     steps:
       - uses: actions/checkout@v3
-
+      - name: Test env
+        run: |
+          echo ${{ env.VERSION }}
+          echo ${{ env.SHA }}
       - name: Cache if success
         id: release-to-s3
         uses: actions/cache@v3
