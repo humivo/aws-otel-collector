@@ -166,7 +166,10 @@ jobs:
     needs: [release-checking]
     steps:
       - uses: actions/checkout@v3
-
+      - name: Test env
+        run: |
+          echo ${{ needs.release-checking.outputs.version_input }}
+          echo ${{ needs.release-checking.outputs.sha_input }}
       - name: Cache if success
         id: release-version-image
         uses: actions/cache@v3
