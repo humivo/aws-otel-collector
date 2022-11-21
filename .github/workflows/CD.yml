@@ -88,23 +88,23 @@ jobs:
         run: tar zxvf candidate.tar.gz
 
       - name: Check commit SHA and version
+        if: false
         id: checking_sha_version
         run: |
           version_in_release=`cat $PACKAGING_ROOT/VERSION`
-#          version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
-          version_in_release_candidate=v1.1.23
+          version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
           sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
 
-#          if [ $version_in_release != ${{ github.ref_name }} ]; then
-#            echo "::error::Wrong version is detected: $version_in_release != ${{ github.ref_name }}"
-#            exit 1
-#          fi
-#          if [ $sha_in_candidate != ${{ github.sha }} ]; then
-#            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.sha }}"
-#            exit 1
-#          fi
+          if [ $version_in_release != ${{ github.ref_name }} ]; then
+            echo "::error::Wrong version is detected: $version_in_release != ${{ github.ref_name }}"
+            exit 1
+          fi
+          if [ $sha_in_candidate != ${{ github.sha }} ]; then
+            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.sha }}"
+            exit 1
+          fi
 
-#          echo "::set-output name=version::$version_in_release"
+          echo "::set-output name=version::$version_in_release"
           echo "testing_version=$version_in_release_candidate" >> $GITHUB_OUTPUT
           
       - name: Compare version with Dockerhub latest
@@ -130,7 +130,6 @@ jobs:
         run: |
           echo ${{ needs.release-checking.outputs.version }}
           echo ${{ needs.release-checking.outputs.sha }}
-          echo ${{ needs.release-checking.outputs.testing_version }}
       - name: Cache if success
         id: release-to-s3
         uses: actions/cache@v3
@@ -170,7 +169,6 @@ jobs:
         run: |
           echo ${{ needs.release-checking.outputs.version }}
           echo ${{ needs.release-checking.outputs.sha }}
-          echo ${{ needs.release-checking.outputs.testing_version }}
       - name: Cache if success
         id: release-version-image
         uses: actions/cache@v3
