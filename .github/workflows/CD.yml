@@ -92,7 +92,7 @@ jobs:
         run: |
           version_in_release=`cat $PACKAGING_ROOT/VERSION`
 #          version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
-          version_in_release_candidate="v1.1.23"
+          version_in_release_candidate=v1.1.23
           sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
 
 #          if [ $version_in_release != ${{ github.ref_name }} ]; then
@@ -105,7 +105,7 @@ jobs:
 #          fi
 
 #          echo "::set-output name=version::$version_in_release"
-          echo "testing_version=${{ version_in_release_candidate }}" >> $GITHUB_OUTPUT
+          echo "testing_version=$version_in_release_candidate" >> $GITHUB_OUTPUT
           
       - name: Compare version with Dockerhub latest
         if: false
