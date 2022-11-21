@@ -51,18 +51,19 @@ jobs:
     steps: 
       - uses: actions/checkout@v3
       - name: Set env
+        id: set-input-vars
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }}; then
-            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
-            echo "SHA=${{ github.event.inputs.sha }}" >> $GITHUB_ENV
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "SHA=${{ github.event.inputs.sha }}" >> $GITHUB_OUTPUT
           else
-            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
-            echo "SHA=${{ github.sha }}" >> $GITHUB_ENV
+            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "SHA=${{ github.sha }}" >> $GITHUB_OUTPUT
           fi
       - name: Test env
         run: |
-          echo ${{ env.VERSION }}
-          echo ${{ env.SHA }}
+          echo ${{ steps.set-input-vars.outputs.VERSION }}
+          echo ${{ steps.set-input-vars.outputs.SHA }}
       - name: Configure AWS Credentials
         if: false
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -126,8 +127,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test env
         run: |
-          echo ${{ env.VERSION }}
-          echo ${{ env.SHA }}
+          echo ${{ steps.set-input-vars.outputs.VERSION }}
+          echo ${{ steps.set-input-vars.outputs.SHA }}
       - name: Cache if success
         id: release-to-s3
         uses: actions/cache@v3
